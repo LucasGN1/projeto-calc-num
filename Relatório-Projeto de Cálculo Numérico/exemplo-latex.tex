@@ -1,0 +1,147 @@
+% Modelo de projeto para disciplinas do Abel
+
+\documentclass[a4paper,11pt]{article}
+\usepackage{sbpo-template}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{url}
+
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{indentfirst}
+\usepackage{mathpazo}
+\usepackage{eulervm}
+
+\title{Equação do Calor undimensional no tempo}
+
+\begin{document}
+
+\maketitle
+
+\author{
+  \name{Ana Flávia Sturaro Calegari}
+  \name{Danyelle Horobinski}
+  \name{Jéssica Gomes Furtado}
+  \name{Lucas Gabriel Nadolny}
+  \institute{UFPR - Disciplinas - Semestre}
+}
+
+\vspace{8mm}
+% \begin{resumo}
+%  Resumo aqui.
+
+% \end{resumo}
+
+% \bigskip
+% \begin{palchaves}
+% Primeira, Segunda, Terceira.
+
+% \bigskip
+
+% \end{palchaves}
+
+%%%%%%%%%%%%%%%%%%%%
+\section{Introdução}
+
+
+\section{Equação do Calor}
+A Equação do Calor representa a variação da temperatura em um determindo espaço, após decorrido um determinado intervalo de tempo. A mesma é formada a partir de equações difereciais parciais, compostas por duas variáveis independentes $x$ e $t$, uma variável dependente $u(x,t)$, além de uma constante $\alpha$ que mede a difusividade térmica. \\ \indent Sendo assim, a Equação do Calor dá-se por: 
+
+%equação do calor
+$$\dfrac{\partial u}{\partial t}= \alpha \dfrac{\partial^2 u}{\partial x^2}$$
+
+\\ \indent Tal equação é aplicada a uma barra, formada de material condutor, de comprimento $L$. Dessa forma, $0 \leq x \leq L$ e $0 \leq t \leq tmax$, isto é, $t$ é um intervalo de tempo finito. Sendo assim, através da Equação do Calor expressa-se o equilíbrio  térmico, no qual a taxa de entrada de calor em uma parte dessa barra é equivalente a taxa de absorção nessa mesma parte. \\
+\indent Para resolver tal equação, é necessário considerar as seguintes condições de contorno para $x=0$, $x=L$ e $t=0$:
+$$u(0,t)=u_0$$ $$u(L,t)=u_L$$ $$u(x,0)=f_0(x)$$
+\section{Métodos Numéricos}
+
+\subsection{Discretização}
+Para que seja possível resolver problemas diferenciais computacionalmente faz-se necessário identificar a região de interesse para a resolução do problema, pois, quando se trata de uma região contínua há uma infinidade de pontos envolvidos, e, sendo assim, não é possível estabelecer soluções numéricas para o problema. \\ \indent Dessa forma, a região de interesse é discretizada, ou seja, é substituída por um conjunto finito de pontos e a solução será obtida apenas nesses pontos. \\ \indent Portanto, com a discretização, o espaço (comprimento da barra) é dividido em interválos equidistantes de tamanho $\Delta x$, assim como o tempo, cujos intervalos são de tamanho $\Delta t$. Dessa forma, os pontos a serem considerados no problema são representados por uma malha. \\ \indent Os pontos são determinados em um intervalo de $0 \leq x \leq L$ tais que:
+
+$$x_i = (i-1)\Delta x, \indent i=1, ... , N$$ 
+\\ \indent Sendo N a quatidade total de pontos. Dessa forma, o passo (distância do intervalo) dá-se por:
+$$\Delta x=\frac{L}{(N-1)}$$
+\indent De maneira similar, também o tempo $t$ em um intervalo de $0 \leq t \leq tmax$ é dividido, tal que:
+$$t_m=(m-1)\Delta t, \indent m=1, ... , M$$
+\indent Onde, $M$ é o total de pontos e $\Delta t$ calcula-se por:
+$$\Delta t=\frac{tmax}{(M-1)}$$
+
+%imagem da malha
+%perguntar sobre as representação dos intervalos
+
+\subsection{Aproximação de derivada de primeira ordem por diferença}
+Através do Polinômio de Taylor com Resto de Lagrange é possivel aproximar funções com certo nível de precisão. A aproximação é calculada da seguinte forma:
+
+$$f(x)=f(x_0)+f'(x_0)(x-x_0)+\frac{f''(x_0)(x-x_0)^2}{2!}+\frac{f'''(x_0)^3}{3!}+ ... +\frac{f^{(n)}(x_0)(x-x_0)^n}{n!}+\frac{f^{(n+1)}(c)(x-x_0)^{(n+1)}}{(n+1)!}$$
+\indent Considerando $g(x)=u(x,t_m)$, com $t_m$ fixo, e aplicando o Polinômio de Taylor com Resto de Lagrange ao redor de $x_0=x_i$, tem-se:
+
+$$g(x)=g(x_i)+g'(x_i)(x-x_i)+\frac{g''(c)(x-x_i)^2}{2} \eqno(1)$$
+\indent Sendo $h=\Delta x$ e $x=x_i+h$, tem-se:
+$$g(x_i+h)=g(x_{i+1})=g(x_i)+g'(x_i)h+\frac{g''(c)h^2}{2} \eqno(2)$$
+\indent Isolando $g'(x_i)$ em (1), obtêm-se:
+$$g'(x_i)=\frac{g(x_{i+1})-g(x_i)}{h}-\frac{g''(c)h}{2} \eqno(3)$$
+\indent Com $x_i \leq c \leq x_{x+1}$. Isolando o erro na equação (2), tem-se:
+$$-\frac{g''(c)h}{2}=-g'(x_i)+\frac{g(x_{i+1})-g(x_i)}{h}$$
+\indent Dessa forma, o erro depende de $h$. Sendo, $\Phi (h)=-\frac{g''(c)h}{2}$, obtêm-se:
+$$g'(x_i)=\frac{g(x_{i+1})-g(x_i)}{h}+\Phi (h) \eqno (4)$$
+\indent A equação (4) é denominada \textit{forward difference} por envolver $x_i$ e $x_{i+1}$. O erro pode ser controlado ao escolher $h$, quanto menor o $h$ menor será o erro, todavia, em relação a componente $g''(c)$ não há qualquer tipo de controle. \\ \indent Analogamente, subtituindo $x=x_i-h$ na equação (1), chega-se em:
+%$$g(x_i-h)=g(x_{i-1})=g(x_i)-g'(x_i)h+\frac{g''(c)h^2}{2} \eqno(5)$$
+%\indent Fazendo as manipulações, tem-se:
+$$g'(x_i)=\frac{g(x_i)-g(x_{i-1})}{h}+\Phi (h) \eqno (5)$$
+\indent A equação (5) é chamada de \textit{backward difference}, pois envolve $x_i$ e $x_{i-1}$. O erro é o mesmo tanto para a equação (3) quanto para a (4), porém, ainda é possivel chegar em uma aproximação cujo erro é menor.
+%colocar a diferença central?
+%se não colocar lembrar de tirar a última frase do último parágrafo
+\subsubsection{Aproximação de derivada de segunda ordem por diferença}
+
+Para aproximar derivadas de segunda ordem, é preciso da Fórmula de Taylor até terceira ordem com Resto de Lagrange aplicada em $g(x_{i+1})$ e $g(x_{i-1})$. Portanto, tem-se:
+$$g(x_{i+1})=g(x_i)+g'(x_i)h+\frac{g''(x_i)h^2}{2}+\frac{g'''(x_i)h^3}{3!}+\frac{g^{iv}(c)h^4}{4!} \eqno(6)$$
+\indent e
+$$g(x_{i-1})=g(x_i)-g'(x_i)h+\frac{g''(x_i)h^2}{2}-\frac{g'''(x_i)h^3}{3!}+\frac{g^{iv}(c)h^4}{4!}  \eqno(7)$$
+\indent Logo, somando (6) e (7), obtêm-se:
+
+$$g(x_{i+1})+g(x_{i-1})=2g(x_i)+g''(x_i)h^2+\frac{g^{iv}(c)h^4}{12} \eqno (8)$$
+\indent Isolando $g''(x_i)$ em (8), tem-se:
+$$g''(x_i)=\frac{g(x_{i+1})-2g(x_i)+g(x_{i-1})}{h^2}-\frac{g^{iv}(c)h^2}{12} \eqno(9)$$ 
+\indent Substituindo $-\frac{g^{iv}(c)h^2}{12}=\Phi (h^2)$ em (9), tem-se:
+$$g''(x_i)=\frac{g(x_{i+1})-2g(x_i)+g(x_{i-1})}{h^2}+\Phi(h^2) \eqno(10)$$ 
+\indent A equação (10) é chamada aproximação de diferença central.
+\section{Métodos de Diferença Finita (MDF)}
+%colocar alguma coisa
+\subsection{Diferença Finita Progressiva}
+Como a equação do calor dá-se por:
+$$\dfrac{\partial u}{\partial t}= \alpha \dfrac{\partial^2 u}{\partial x^2} \eqno(11)$$
+Será utilizada a equação \textit{forward difference} (4), para aproimar a deriada de primeira ordem, o primeiro membro da equação (11). Como a derivada em questão é em relação ao tempo, fazendo as manipulações, tem-se:
+$$\dfrac{\partial u}{\partial t}=\frac{u(x_i,t_{m+1})-u(x_i,t_{m})}{\Delta t}+\Phi (\Delta t) \eqno (12)$$
+\indent Para aproximar a derivada de segunda ordem, o segundo membro da equação, será utilizada a equação (10), logo, tem-se:
+$$\dfrac{\partial^2 u}{\partial x^2}=\frac{u(x_{i+1},t_m)-2g(x_i,t_m)+g(x_{i-1},t_m)}{\Delta x^2}+\Phi(\Delta x^2) \eqno(13)$$ 
+\indent Fazendo as respectivas substituições das equações (12) e (13) na equação (11), chega-se em:
+$$\frac{u(x_i,t_{m+1})-u(x_i,t_{m})}{\Delta t}+\Phi (\Delta t)=\alpha (\frac{u(x_{i+1},t_m)-2u(x_i,t_m)+u(x_{i-1},t_m)}{\Delta x^2}+\Phi(\Delta x^2)) \eqno (14)$$
+\indent Isolando $u(x_i,t_{m+1})$ e eliminando o erro na equação (14), obtém-se:
+$$u(x_i,t_{m+1})=u(x_i,t_{m})+\frac{\alpha \Delta t}{\Delta x^2}[u(x_{i+1},t_m)-2u(x_i,t_m)+u(x_{i-1},t_m)] \eqno(15)$$
+\indent Substituindo $r=\frac{\alpha \Delta t}{\Delta x^2}$, fazendo a distrisibutiva e evidenciando $u(x_i,t_{m})$ na equação (15), obtêm-se:
+$$u(x_i,t_{m+1})=u(x_i,t_m)(1-2r)+ru(x_{i+1},t-m)+ru(x_{i-1},t_m) \eqno (16)$$
+\indent Dessa forma, pela equação (15) obtêm-se uma aproximação para e Equação do Calor. Todavia, essa aproximação mostra-se instável em determinadas situações, para que esse método retorne soluções estáveis, é preciso que:
+
+$$r=\frac{\alpha \Delta t}{\Delta x^2}<\frac{1}{2} \eqno (17)$$
+
+\indent Como $\Delta t=\frac{tmax}{(M-1)}$ e $\Delta x=\frac{L}{(N-1)}$, substituindo em (17), tem-se:
+
+$$r=\alpha \frac{tmax (N-1)^2}{L^2 (M-1)}< \frac{1}{2}$$
+\indent Como $L$ é o comprimento da barra, $tmax$ é o tempo em que será medido a variação de temperatura, $\alpha$ é a constante que mede a difusividade térmica, e o vetor do espaço com suas partições é fornecido, logo, essas componentes não podem ser controladas. Sendo assim, para que o método obtenha soluções estáveis é preciso controlar $(M-1)$ (total de intervalos de tempo), ou seja, $M$ precisa ser suficientemente "grande" para que sempre $r< \frac{1}{2}$.
+
+
+
+
+
+%colocar imagem da malha
+\section{Metodologia e Análise}
+
+\section{Considerações finais}
+
+%%%%%%%%%%%%%%%%%%%%
+
+\bibliographystyle{sbpo} %% Não precisa mexer
+\bibliography{exemplo-latex} %% Não precisa mexer
+
+\end{document}
+
