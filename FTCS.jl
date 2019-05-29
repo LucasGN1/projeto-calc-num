@@ -1,11 +1,6 @@
 using Plots
 gr()
 
-
-"""
-    #Inserir explicação
-
-"""
 function FTCS(α::Float64, u::Vector, L::Float64, tmax::Float64; nt = 100, fig_name="Ibagem")
     nx = size(u)[1] - 1
     dx = L/nx
@@ -14,7 +9,6 @@ function FTCS(α::Float64, u::Vector, L::Float64, tmax::Float64; nt = 100, fig_n
 
     if r >= 0.5
         error("r = $r >= 1/2, solução instável.")
-        #lidar com erro de outro jeito, aumentando nt?
     end
 
     r2 = 1 - 2*r
@@ -42,15 +36,3 @@ function FTCS(α::Float64, u::Vector, L::Float64, tmax::Float64; nt = 100, fig_n
     savefig(fig_name)
 end
 
-#=
-
-Exemplo:
-
-function main()
-    u = (x -> sin(pi*x)).(range(0.0, stop=1.0, length=100))
-    FTCS(2.0e-1, u, 1.0, 1.0, nt=10000)
-end
-
-main()
-
-=#
