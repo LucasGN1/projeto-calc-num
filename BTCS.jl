@@ -1,10 +1,6 @@
 using Plots
 gr()
 
-"""
-    #Inserir explicação
-
-"""
 function BTCS(α::Float64, u::Vector, L::Float64, tmax::Float64; nt = 100, fig_name="Ibagem")
     n = size(u)[1]
     A = zeros(n, n)
@@ -45,16 +41,3 @@ function BTCS(α::Float64, u::Vector, L::Float64, tmax::Float64; nt = 100, fig_n
     end
     savefig(fig_name)
 end
-
-#=
-
-Exemplo:
-
-function main()
-    u = (x -> sin(pi*x)).(range(0.0, stop=1.0, length=100))
-    BTCS(2.0e-1, u, 1.0, 1.0, fig_name="IbagemBTCS")
-end
-
-main()
-
-=#
